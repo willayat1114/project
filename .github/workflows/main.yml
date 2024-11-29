@@ -46,6 +46,6 @@ jobs:
         git config --global user.email "wilayatalikawoosa@gmail.com"
         npm install -g gh-pages
         npm run build
-        gh-pages -d build -r https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/willayat1114/project.git
+        gh-pages -d build -r https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/willayat1114/project.git
       env:
-        PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
