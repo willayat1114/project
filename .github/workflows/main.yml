@@ -47,7 +47,9 @@ jobs:
       run: |
         git config --global user.name "wilayat1114"
         git config --global user.email "ayaanasrar3473@gmail.com"
+        git config --global init.defaultBranch main
         git init
+        git checkout -b main
         git add -A
         git commit -m "Deploy to GitHub Pages"
         git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/wilayat1114/project.git main:gh-pages
