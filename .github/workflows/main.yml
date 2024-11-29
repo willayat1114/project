@@ -42,10 +42,10 @@ jobs:
     - name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main'
       run: |
-        git config --global user.name "Wilayat Ali Kawoosa"
-        git config --global user.email "wilayatalikawoosa@gmail.com"
+        git config --global user.name "wilayat1114"
+        git config --global user.email "ayaanasrar3473@gmail.com"
         npm install -g gh-pages
         npm run build
-        gh-pages -d build -r https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/willayat1114/project.git
+        gh-pages -d build -r https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/wilayat1114/project.git
       env:
-        PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
