@@ -26,11 +26,8 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Install Mocha
-      run: npm install -g mocha
-
     - name: Run tests
-      run: npm test
+      run: npx mocha --reporter spec --check-leaks --bail test/
 
     - name: Build project
       run: npm run build
