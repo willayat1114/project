@@ -47,7 +47,10 @@ jobs:
       run: |
         git config --global user.name "wilayat1114"
         git config --global user.email "ayaanasrar3473@gmail.com"
-        git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/wilayat1114/project.git
-        npx gh-pages -d build -u "github-actions-bot <support+actions@github.com>"
+        git init
+        git add -A
+        git commit -m "Deploy to GitHub Pages"
+        git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/wilayat1114/project.git main:gh-pages
+      working-directory: build
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

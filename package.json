@@ -10,9 +10,10 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha --reporter spec --check-leaks --bail test/",
-    "build": "mkdir build && xcopy /E /I public build && copy app.js build\\ && copy package.json build\\ && copy package-lock.json build\\",
+    "build": "mkdir -p build && cp -r public/* build/ && cp app.js build/ && cp package.json build/ && cp package-lock.json build/",
     "deploy": "gh-pages -d build"
   },
+  "homepage": "https://wilayat1114.github.io/project",
   "keywords": [],
   "author": "",
   "license": "ISC",
