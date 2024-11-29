@@ -10,8 +10,8 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha --reporter spec --check-leaks --bail test/",
-    "build": "mkdir -p build && cp -r public/* build/ && cp app.js build/ && cp package.json build/ && cp package-lock.json build/",
-    "deploy": "gh-pages -d build"
+    "build": "mkdir -p build && cp -r public/* build/",
+    "deploy": "gh-pages -d build -r https://$PAT_TOKEN@github.com/willayat1114/project.git"
   },
   "homepage": "https://willayat1114.github.io/project",
   "keywords": [],
