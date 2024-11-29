@@ -10,7 +10,8 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha --reporter spec --check-leaks --bail test/",
-    "build": "mkdir -p build && cp -r public/* build/",
+    "build": "mkdir -p build && cp -r public/* build/ && cp app.js build/",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
   "homepage": "https://willayat1114.github.io/project",

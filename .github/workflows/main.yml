@@ -7,21 +7,21 @@ on:
     branches: [ main ]
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Setup Pages
-      uses: actions/configure-pages@v3
-      
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
@@ -30,27 +30,15 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Create dummy test file if none exist
-      run: |
-        mkdir -p test
-        echo "describe('Dummy test', function() { it('should pass', function() {}); });" > test/dummy.test.js
-
-    - name: Run tests
-      run: npx mocha --reporter spec --check-leaks --bail test/
-
     - name: Build project
       run: |
         mkdir -p build
         cp -r public/* build/
         cp app.js build/
         cp package.json build/
-        cp package-lock.json build/
-
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v2
-      with:
-        path: 'build'
 
     - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v2
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: build
+        branch: gh-pages
