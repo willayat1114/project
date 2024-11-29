@@ -47,8 +47,12 @@ jobs:
       run: |
         git config --global user.name "wilayat1114"
         git config --global user.email "ayaanasrar3473@gmail.com"
-        git remote set-url origin https://${{ secrets.PAT_TOKEN }}@github.com/willayat1114/project.git
-        npm run deploy
+        git init
+        git add .
+        git commit -m "Deploy to GitHub Pages"
+        git branch -M main
+        git remote add origin https://${{ secrets.PAT_TOKEN }}@github.com/willayat1114/project.git
+        git push -f origin main:gh-pages
       env:
-        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
       working-directory: build

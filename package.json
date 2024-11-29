@@ -11,7 +11,7 @@
   "scripts": {
     "test": "mocha --reporter spec --check-leaks --bail test/",
     "build": "mkdir -p build && cp -r public/* build/",
-    "deploy": "gh-pages -d build -r https://$PAT_TOKEN@github.com/willayat1114/project.git"
+    "deploy": "gh-pages -d build"
   },
   "homepage": "https://willayat1114.github.io/project",
   "keywords": [],
