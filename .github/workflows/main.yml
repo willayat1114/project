@@ -37,7 +37,10 @@ jobs:
     - name: Build project
       run: |
         mkdir -p build
-        echo "Dummy build file" > build/index.html
+        cp -r public/* build/
+        cp app.js build/
+        cp package.json build/
+        cp package-lock.json build/
 
     - name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main'
@@ -46,6 +49,6 @@ jobs:
         git config --global user.email "ayaanasrar3473@gmail.com"
         npm install -g gh-pages
         npm run build
-        gh-pages -d build -r https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/wilayat1114/project.git
+        gh-pages -d build
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

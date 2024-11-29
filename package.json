@@ -10,8 +10,8 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha --reporter spec --check-leaks --bail test/",
-    "build": "your-build-command-here",
-    "deploy": "gh-pages -d dist"
+    "build": "mkdir -p build && cp -r public/* build/",
+    "deploy": "gh-pages -d build"
   },
   "keywords": [],
   "author": "",
