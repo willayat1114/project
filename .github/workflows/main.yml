@@ -52,7 +52,7 @@ jobs:
         git checkout -b main
         git add -A
         git commit -m "Deploy to GitHub Pages"
-        git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/wilayat1114/project.git main:gh-pages
+        git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/willayat1114/project.git main:gh-pages
       working-directory: build
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

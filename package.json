@@ -13,7 +13,7 @@
     "build": "mkdir -p build && cp -r public/* build/ && cp app.js build/ && cp package.json build/ && cp package-lock.json build/",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://wilayat1114.github.io/project",
+  "homepage": "https://willayat1114.github.io/project",
   "keywords": [],
   "author": "",
   "license": "ISC",
