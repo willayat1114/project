@@ -10,7 +10,7 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha --reporter spec --check-leaks --bail test/",
-    "build": "mkdir -p build && cp -r public/* build/",
+    "build": "mkdir build && xcopy /E /I public build && copy app.js build\\ && copy package.json build\\ && copy package-lock.json build\\",
     "deploy": "gh-pages -d build"
   },
   "keywords": [],
