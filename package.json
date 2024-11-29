@@ -10,9 +10,8 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "build": "your-build-command",
-    "test": "your-test-command",
-    "deploy": "gh-pages -d build"
+    "test": "mocha --reporter spec --check-leaks --bail test/"
+  }
   },
   "keywords": [],
   "author": "",
