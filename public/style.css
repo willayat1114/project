@@ -1,0 +1,140 @@
+/* Body and basic layout */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e5f5e5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Main container */
+.container {
+    text-align: center;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 600px; /* Increased width to accommodate more files */
+    height: auto; /* Set height to auto to adjust based on content */
+}
+
+/* Headline styling */
+h1 {
+    font-size: 24px;
+    color: #4CAF50;
+}
+
+/* Input elements */
+input[type="text"], input[type="file"], button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* File input styling */
+.file-input-container {
+    border: 2px dashed #4CAF50;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    color: #4CAF50;
+    margin: 10px 0;
+}
+
+.file-input-container:hover {
+    background-color: #e5f5e5;
+}
+
+.file-input-container input[type="file"] {
+    display: none;
+}
+
+/* Button styling */
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* File preview section */
+.file-preview {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.file-preview img,
+.file-preview video {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.file-preview .preview-container {
+    position: relative;
+    display: inline-block;
+}
+
+.file-preview .remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+}
+
+/* Notification styling */
+.notification {
+    margin-top: 20px;
+    padding: 10px;
+    display: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+}
+
+/* Error notification */
+.notification.error {
+    background-color: #f44336;
+}
+
+.notification.success {
+    background-color: #4CAF50;
+}
+
+/* Message styling */
+#message {
+    margin-top: 20px;
+    padding: 10px;
+    display: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+}
+
+#message.error {
+    background-color: #f44336;
+}
