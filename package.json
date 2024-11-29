@@ -10,7 +10,8 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "mocha --reporter spec --check-leaks --bail test/"
+    "test": "mocha --reporter spec --check-leaks --bail test/",
+    "build": "echo 'Build script not defined'"
   },
   "keywords": [],
   "author": "",
