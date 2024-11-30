@@ -100,7 +100,12 @@ function uploadFiles(event) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
         // Success: Show notification
         notification.classList.add('success');
@@ -110,5 +115,6 @@ function uploadFiles(event) {
         // Error: Show notification
         notification.classList.add('error');
         notification.textContent = 'Error uploading files. Please try again.';
+        console.error('Error:', error);
     });
 }

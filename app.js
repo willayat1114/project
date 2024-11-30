@@ -1,90 +1,126 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const { google } = require('googleapis');
 const fs = require('fs');
+const { Readable } = require('stream');
 
 // Initialize express app
 const app = express();
 const port = 3000;
 
-// Set the upload folder and file storage settings
-const uploadDir = './uploads';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir); // Create folder if it doesn't exist
+// Configure Google Drive API
+const GOOGLE_DRIVE_FOLDER_ID = '1-88YiM-7JkhDcIaFteRCclGVdHGqPQQZ';
+let drive;
+try {
+    const auth = new google.auth.GoogleAuth({
+        keyFile: 'credentials.json', // You'll need to create this file
+        scopes: ['https://www.googleapis.com/auth/drive.file']
+    });
+    drive = google.drive({ version: 'v3', auth });
+} catch (error) {
+    console.error('Error loading credentials.json:', error);
+    process.exit(1); // Exit the application if credentials.json is not found
 }
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir); // Upload files to the 'uploads' folder
-    },
-    filename: (req, file, cb) => {
-        const name = req.body.name.replace(/\s+/g, '_'); // Replace spaces with underscores
-        let fileExt = path.extname(file.originalname);
-        let fileName = `${name}`;
-        let count = 1;
-        let newFileName = `${fileName}_${String(count).padStart(3, '0')}${fileExt}`;
-        while (fs.existsSync(path.join(uploadDir, newFileName))) {
-            count++;
-            newFileName = `${fileName}_${String(count).padStart(3, '0')}${fileExt}`;
+// Configure multer for memory storage
+const upload = multer({
+    storage: multer.memoryStorage(),
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png|gif|mp4|avi|mkv|mov|txt|pdf/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+        
+        if (extname && mimetype) {
+            return cb(null, true);
+        } else {
+            return cb(new Error('Only images, videos, and text files are allowed!'));
         }
-        cb(null, newFileName);
     }
-});
+}).array('files');
 
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif|mp4|avi|mkv|mov|txt|pdf/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-
-    // Debugging: Print file details
-    console.log(`File: ${file.originalname}, Extname: ${path.extname(file.originalname)}, Mimetype: ${file.mimetype}`);
-    
-    if (extname && mimetype) {
-        return cb(null, true);  // Allow the file
-    } else {
-        return cb(new Error('Only images, videos, and text files are allowed!'));  // Reject the file
-    }
-};
-
-const upload = multer({ 
-    storage: storage,
-    fileFilter: fileFilter
-}).array('files'); // Ensure the file filter is applied
-
-// Serve static files like HTML, CSS, JS
-app.use(express.static(path.join(__dirname, 'public'))); // Corrected static files path
-
-// Parse form data
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
-// Route to render the homepage
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html')); // Serve index.html from public directory
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Route to handle file uploads
-app.post('/upload', (req, res) => {
-    upload(req, res, function (err) {
-        if (err) {
-            return res.status(400).json({ message: err.message });
-        }
+// Function to get the next available filename
+async function getNextFileName(baseName, extension) {
+    let index = 1;
+    let fileName;
+    let exists = true;
 
-        const { name } = req.body;
-        const files = req.files;
-
-        if (!files || files.length === 0) {
-            return res.status(400).json({ message: "No files uploaded!" });
-        }
-
-        // Respond with the list of uploaded files and the user name
-        res.json({
-            message: `${name}, your files were uploaded successfully!`,
-            uploadedFiles: files.map(file => file.filename)
+    while (exists) {
+        fileName = `${baseName}${String(index).padStart(3, '0')}.${extension}`;
+        const res = await drive.files.list({
+            q: `name='${fileName}' and '${GOOGLE_DRIVE_FOLDER_ID}' in parents`,
+            fields: 'files(id, name)',
+            spaces: 'drive'
         });
-    });
+        exists = res.data.files.length > 0;
+        if (exists) index++;
+    }
+
+    return fileName;
+}
+
+// Function to sanitize the base name
+function sanitizeBaseName(name) {
+    return name.replace(/[^a-zA-Z0-9_-]/g, '_');
+}
+
+// Modified upload route to handle Google Drive upload
+app.post('/upload', async (req, res) => {
+    try {
+        upload(req, res, async function(err) {
+            if (err) {
+                return res.status(400).json({ message: err.message });
+            }
+
+            const { name } = req.body;
+            const files = req.files;
+
+            if (!files || files.length === 0) {
+                return res.status(400).json({ message: "No files uploaded!" });
+            }
+
+            const uploadedFiles = [];
+
+            // Upload each file to Google Drive
+            for (const file of files) {
+                const baseName = sanitizeBaseName(name.replace(/\s+/g, '_'));
+                const extension = path.extname(file.originalname).toLowerCase().slice(1);
+                const fileName = await getNextFileName(baseName, extension);
+                
+                const response = await drive.files.create({
+                    requestBody: {
+                        name: fileName,
+                        parents: [GOOGLE_DRIVE_FOLDER_ID],
+                        mimeType: file.mimetype
+                    },
+                    media: {
+                        mimeType: file.mimetype,
+                        body: Readable.from(file.buffer) // Use Readable stream
+                    }
+                });
+
+                uploadedFiles.push(fileName);
+            }
+
+            res.json({
+                message: `${name}, your files were uploaded successfully to Google Drive!`,
+                uploadedFiles: uploadedFiles
+            });
+        });
+    } catch (error) {
+        console.error('Error uploading to Google Drive:', error);
+        res.status(500).json({ message: 'Error uploading files to Google Drive' });
+    }
 });
 
-// Start server
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
